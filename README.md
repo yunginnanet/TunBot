@@ -21,8 +21,22 @@ The idea worked in practice and reduced latencies by 50ms or more.
 
 #### Server
 
+* SPLIT UP SERVER INTO ONE MASTER SERVER WITH ADDITIONAL SATELLITE SERVERS
+  * Master server holds DB of satellite server info
+  * Master server collects logs from nodes (central logging)
+  * Health checks on satellite servers
+  * Satellite server installation script
+
 * Administrative interface
+  * Statistics
+   * Currently active tunnels/nodes
+   * Bandwidth statistics per node
+
 * Automatic cleanup for defunct/old tunnels
+
+
+
+
 
 #### Overall
 
