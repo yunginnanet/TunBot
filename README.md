@@ -27,16 +27,13 @@ The idea worked in practice and reduced latencies by 50ms or more.
   * Health checks on satellite servers
   * Satellite server installation script
 
-* Administrative interface
-  * Statistics
+* Administration Panel
+
+* Statistics
    * Currently active tunnels/nodes
    * Bandwidth statistics per node
 
 * Automatic cleanup for defunct/old tunnels
-
-
-
-
 
 #### Overall
 
