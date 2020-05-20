@@ -1,6 +1,6 @@
 # TunBot
 
-I made this for a now abandoned project, the idea was that the client would be able to generate TCP tunnels on the fly for RDP connections by making HTTP calls to the server endpoints via a simple API.
+I made this many moons ago for a now abandoned project, the idea was that the client would be able to generate TCP tunnels on the fly for RDP connections by making HTTP calls to the server endpoints via a simple API.
 
 The idea was that customers trying to access their RDP sessions in certain countries could reduce their latency significantly if they session was tunneled through certain endpoints.
 
@@ -12,3 +12,18 @@ The idea worked in practice and reduced latencies by 50ms or more.
 * Basic HTTP API on server will allow for multiple tunnels to exist within one program instance
 * Works last time i tried it? (tested in win10 and debian)
 * Doesn't have any secrets in the repo that are in use anywhere
+
+## To-do
+
+#### Client
+
+* Calculate the best server endpoint by running tcping latency checks via all available server endpoints to the target RDP daemon
+
+#### Server
+
+* Administrative interface
+* Automatic cleanup for defunct/old tunnels
+
+#### Overall
+
+* General security auditing, this thing is definitely not ready for prod
