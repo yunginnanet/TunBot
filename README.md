@@ -6,9 +6,9 @@ The idea was that customers trying to access their RDP sessions in certain count
 
 The idea worked in practice and reduced latencies by 50ms or more.
 
-## notable functionality
+## Notes
 
-* uses the magic packet wizardry to actually detect an RDP server on the target
-* basic HTTP API on server will allow for multiple tunnels to exist within one program instance
-* works last time i tried it? (tested in win10 and debian)
-* doesn't have any secrets in the repo that are in use anywhere
+* Uses the magic packet wizardry to actually detect an RDP server on the target
+* Basic HTTP API on server will allow for multiple tunnels to exist within one program instance
+* Works last time i tried it? (tested in win10 and debian)
+* Doesn't have any secrets in the repo that are in use anywhere
