@@ -17,7 +17,8 @@ The idea worked in practice and reduced latencies by 50ms or more.
 
 #### Client
 
-* Calculate the best server endpoint by running tcping latency checks via all available server endpoints to the target RDP daemon
+* Calculate the best server endpoint by running tcping latency checks
+* Web interface
 
 #### Server
 
