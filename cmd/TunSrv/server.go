@@ -17,6 +17,7 @@ import (
 )
 
 const apikey = "PocyicaipdytNomeffyevUtyoaflebOs"
+
 var homeport = 3000
 
 func rando(min int, max int) int {
@@ -45,7 +46,7 @@ func rdpfinder(remoteip string, remoteport string) bool {
 func forward(conn net.Conn, remoteip string, remoteport string) {
 	client, err := net.Dial("tcp", remoteip+":"+remoteport)
 	if err != nil {
-		log.Println("Dial failed: %v", err)
+		log.Printf("Dial failed: %v\n", err)
 	}
 	log.Printf("Connected to localhost %v\n", conn)
 	go func() {

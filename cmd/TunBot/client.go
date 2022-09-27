@@ -1,35 +1,37 @@
 package main
 
 import (
+	"bytes"
 	"crypto/tls"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
-
-	"strconv"
+	"os"
 	"strings"
-
-	"bytes"
-
-	"io/ioutil"
-
-	"time"
 
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
-	"github.com/sparrc/go-ping"
 
 	"gopkg.in/AlecAivazis/survey.v1"
 )
 
-const (
-	apikey                     = "hpjGsW388tuUJruT"
-	sslInsecureSkipVerify bool = true
+var (
+	apikey = os.Getenv("TUNBOT_API_KEY")
 
-	masterpass = "42f658b75e96614d035f66982bde4ad3"
-	salt       = "C4BbprF4X"
+	maintenance                = os.Getenv("TUNBOT_MAINTENANCE")
+	salt                       = os.Getenv("TUNBOT_SALT")
+	sslInsecureSkipVerify bool = true
 )
+
+func init() {
+	for _, val := range []*string{&apikey, &maintenance, &salt} {
+		if *val == "" {
+			*val = "fuckmeupfam"
+		}
+	}
+}
 
 func httpclient() *http.Client {
 	tr := &http.Transport{
@@ -37,29 +39,6 @@ func httpclient() *http.Client {
 	}
 	client := &http.Client{Transport: tr}
 	return client
-}
-
-func bestlatency() string {
-	smallest := int64(99999999999999999)
-	winner := "null"
-	for i := 0; i < len(serverlist); i++ {
-		target := serverlist[i]
-		pinger, err := ping.NewPinger(target)
-		if err != nil {
-			continue
-		}
-		pinger.SetPrivileged(true)
-		pinger.Count = 2
-		pinger.Run()                 // blocks until finished
-		stats := pinger.Statistics() // get send/receive/rtt stats
-		ms := int64(stats.AvgRtt / time.Millisecond)
-		fmt.Println(serverlist[i] + " - " + strconv.FormatInt(ms, 10) + "ms")
-		if ms < smallest {
-			smallest = ms
-			winner = serverlist[i]
-		}
-	}
-	return winner
 }
 
 func apicall(tunserv string, remoteip string, remoteport string) {
@@ -87,7 +66,7 @@ func apicall(tunserv string, remoteip string, remoteport string) {
 		return
 	}
 
-	resp_body, _ := ioutil.ReadAll(resp.Body)
+	resp_body, _ := io.ReadAll(resp.Body)
 	resp.Body.Close()
 	if resp.StatusCode == 200 {
 		response := string(resp_body)
@@ -131,7 +110,7 @@ func authenticate() bool {
 	hasher := md5.New()
 	hasher.Write([]byte(passwordattempt + salt))
 	passwordattempt = hex.EncodeToString(hasher.Sum(nil))
-	if passwordattempt == masterpass {
+	if passwordattempt == maintenance {
 		return true
 	} else {
 		fmt.Println("Authentication failure!")
@@ -141,11 +120,7 @@ func authenticate() bool {
 
 func banner() {
 	clear, _ := base64.StdEncoding.DecodeString("ICAgIF9fICBfXyAgICAgICAgICAgICAgICAgIF9cbiAgIC8gLyAvIC9fICBfX19fX18gIF9fX18gIChfKSAgX19cbiAgLyAvXy8gLyAvIC8gLyBfXyBcLyBfXyBcLyAvIHwvXy9cbiAvIF9fICAvIC9fLyAvIC9fLyAvIC8gLyAvIC8+ICA8XG4vXy8gL18vXF9fLCAvXF9fX18vXy8gL18vXy9fL3xffFxuICAgICAgL19fX18v")
-	bannerstring := string(clear)
-	bannersplit := strings.Split(bannerstring, "\\n")
-	for i := 0; i < len(bannersplit); i++ {
-		fmt.Println(bannersplit[i])
-	}
+	io.Copy(os.Stdout, bytes.NewReader(clear))
 	intro := [...]string{
 		"-----------RDP Booster-----------",
 	}
@@ -185,10 +160,8 @@ func main() {
 		}
 
 		fmt.Print("\nFinding tunnel server with lowest latency...\n\n")
-		tunserv := bestlatency()
 
-		//tunserv = "127.0.0.1" //bypass for testing
-		//fmt.Println("\nServer bypass enabled, using "+tunserv)
+		tunserv := "127.0.0.1" //bypass for testing
 
 		fmt.Println("\nRequesting a tunnel to " + answers.Remoteip + ":" + answers.Remoteport + " from " + tunserv + "...\n")
 
